@@ -1,23 +1,70 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cover Snap</title>
-<link rel="stylesheet" href="./style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111116">
+  <meta name="description" content="An independent, offline cover art studio for your own photographs.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='5' fill='%23191620'/%3E%3Ctext x='20' y='29' text-anchor='middle' fill='%23ff9a80' font-style='italic' font-size='29' font-family='Georgia'%3EA%3C/text%3E%3C/svg%3E">
+  <title>Afterglow — Cover art studio</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<main class="app">
-  <section class="controls">
-    <h1>Cover Snap</h1>
-    <p>A photo and a caption, made into a square cover.</p>
-    <label>Photo <input id="photo" type="file" accept="image/*"></label>
-    <label>Caption <input id="caption" type="text" maxlength="40" value="Sunset Heist"></label>
-    <button id="export" type="button">Export PNG 1080 x 1080</button>
-    <p id="status" role="status"></p>
-  </section>
-  <canvas id="cover" width="1080" height="1080" aria-label="The cover"></canvas>
-</main>
-<script type="module" src="./src/main.js"></script>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Afterglow Cover Studio home"><span class="brand-mark">A</span><span>AFTERGLOW<span class="brand-sub">COVER STUDIO</span></span></a>
+    <div class="top-note"><span class="live-dot"></span> PRIVATE BY DESIGN <span class="top-divider">/</span> EVERYTHING STAYS ON THIS DEVICE</div>
+    <div class="top-actions">
+      <button class="icon-button" id="undo" title="Undo · Ctrl Z" aria-label="Undo">↶</button>
+      <button class="icon-button" id="redo" title="Redo · Ctrl Shift Z" aria-label="Redo">↷</button>
+      <span class="top-divider">|</span>
+      <button class="export-button" id="export">Export artwork <span>↗</span></button>
+    </div>
+  </header>
+
+  <main class="studio">
+    <aside class="rail">
+      <div class="rail-title"><span>01</span><div><h1>The art of<br>after dark.</h1><p>An independent cover art studio.<br>Your photographs, your story.</p></div></div>
+      <section class="control-block">
+        <div class="section-label"><span>YOUR PHOTOGRAPHS</span><span id="photo-count">02 READY</span></div>
+        <label class="import-card" for="photo-import"><span class="upload-glyph">＋</span><span><b>Bring your own</b><small>Drop photos here or browse</small></span><span class="import-arrow">↗</span><input id="photo-import" type="file" accept="image/*" multiple></label>
+        <div class="photo-tray" id="photo-tray" aria-label="Local photo library"></div>
+        <p class="microcopy">Local photos never leave your device.</p>
+      </section>
+
+      <section class="control-block panels-block">
+        <div class="section-label"><span>YOUR PANELS</span><button class="text-button" id="add-panel">＋ ADD PANEL</button></div>
+        <div class="panel-list" id="panel-list"></div>
+        <p class="microcopy">Select a panel, then drag its photo on the canvas.</p>
+      </section>
+
+      <section class="control-block adjust-block">
+        <div class="section-label"><span>PANEL ADJUSTMENTS</span><span id="selected-label">01 / 03</span></div>
+        <div class="adjust-heading"><span class="adjust-preview" id="selected-thumb"></span><div><b id="selected-name">Panel one</b><small>Its crop &amp; colour are yours</small></div></div>
+        <label class="range-label"><span>PHOTO SCALE</span><span id="zoom-value">100%</span><input type="range" id="zoom" min="100" max="240" value="100"></label>
+        <div class="tone-row" aria-label="Panel color grade">
+          <button class="tone-chip selected" data-tone="rose"><i></i> ROSE</button><button class="tone-chip" data-tone="aqua"><i></i> AQUA</button><button class="tone-chip" data-tone="gold"><i></i> GOLD</button><button class="tone-chip" data-tone="noir"><i></i> NOIR</button>
+        </div>
+      </section>
+    </aside>
+
+    <section class="workspace">
+      <div class="workspace-head"><div><span class="eyebrow">THE NIGHT SHIFT — ISSUE NO. 06</span><h2>Your story, in full colour.</h2></div><span class="autosave"><i></i> AUTO-SAVED HERE</span></div>
+      <div class="canvas-frame" id="canvas-frame">
+        <canvas id="artwork" width="1920" height="1080" aria-label="Live cover art. Select or drag a photo panel to adjust its crop."></canvas>
+        <div class="canvas-grab"><span>↔</span> DRAG PHOTO TO REFRAME</div>
+      </div>
+      <div class="canvas-foot"><span>MADE AFTER HOURS <b>✳</b> MADE BY YOU</span><span id="canvas-size">1920 × 1080 PX</span></div>
+      <div class="poster-controls">
+        <label class="select-wrap"><span>FORMAT</span><select id="format"><option value="landscape">CINEMA &nbsp; 1920 × 1080</option><option value="square">SQUARE &nbsp; 1080 × 1080</option><option value="portrait">PORTRAIT &nbsp; 1080 × 1350</option></select></label>
+        <label class="select-wrap"><span>COMPOSITION</span><select id="layout"><option value="triptych">AFTER HOURS — 03 PANELS</option><option value="split">CROSSFADE — 02 PANELS</option><option value="four">NIGHT DRIVE — 04 PANELS</option></select></label>
+        <label class="select-wrap palette-control"><span>COLOUR STORY</span><select id="palette"><option value="orchid">ORCHID DUSK</option><option value="heatwave">HEATWAVE</option><option value="deepsea">DEEP SEA</option></select></label>
+      </div>
+      <div class="caption-edit"><div class="caption-intro"><span>02</span><div><b>Give it a name.</b><small>Big feelings, fewer words.</small></div></div><label class="title-field"><span>HEADLINE</span><input id="headline" maxlength="30" value="NEON SAINTS" aria-label="Cover headline"></label><label class="subtitle-field"><span>THE LITTLE LINE</span><input id="subtitle" maxlength="54" value="THE NIGHT BELONGS TO US" aria-label="Cover caption"></label><label class="palette-chip-field" title="Add a field-guide line"><input type="checkbox" id="guide-lines" checked><span>FIELD NOTES</span></label></div>
+      <footer class="studio-foot"><span>DESIGNED FOR THE HOURS BETWEEN</span><span>AFTERGLOW STUDIO <b>—</b> OFFLINE BY NATURE</span></footer>
+    </section>
+  </main>
+  <output class="toast" id="toast" role="status" aria-live="polite"></output>
+  <script defer src="./src/renderer.js"></script>
+  <script defer src="./src/main.js"></script>
 </body>
 </html>
